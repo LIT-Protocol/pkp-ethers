@@ -86,6 +86,7 @@ var transactions_1 = require("@ethersproject/transactions");
 // -- For node.js only --
 var LitJsSdk = __importStar(require("lit-js-sdk/build/index.node.js"));
 // -- For React etc, use the following instead --
+// @ts-ignore
 // import * as LitJsSdk from "lit-js-sdk";
 var logger_1 = require("@ethersproject/logger");
 var _version_1 = require("./_version");

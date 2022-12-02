@@ -1,11 +1,11 @@
-# Note
+# Workflow
 
-- These has to be added to wallet package.json dependencies ONLY when publising
-
-````
-"lit-js-sdk": "^1.2.24",
-"multiformats": "^10.0.2"
 ```
+
+yarn lit --reset
+
+```
+
 The Ethers Project
 ==================
 

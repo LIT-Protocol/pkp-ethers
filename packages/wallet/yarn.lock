@@ -915,11 +915,6 @@ isarray@~1.0.0:
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
   integrity sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==
 
-js-base64@^3.7.2:
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.3.tgz#2e784bb0851636bf1e99ef12e4f3a8a8c9b7639f"
-  integrity sha512-PAr6Xg2jvd7MCR6Ld9Jg3BmTcjYsHEBx1VlwEwULb/qowPf5VD9kEMagj23Gm7JRnSvE/Da/57nChZjnvL8v6A==
-
 js-sha3@0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
@@ -954,24 +949,22 @@ lit-connect-modal@^0.1.10:
   dependencies:
     micromodal "^0.4.10"
 
-lit-js-sdk@^1.2.24:
-  version "1.2.39"
-  resolved "https://registry.yarnpkg.com/lit-js-sdk/-/lit-js-sdk-1.2.39.tgz#85be73785d887ce48a9a2d8ca3f2ffa47b6b05ef"
-  integrity sha512-lM8rLngRfENzKb5OsLo+X5osx01M6vUXFsHJb7Lv+FFTgfyeKWCEH6bX5faOlzlhlz6bTX08pOW0mohwVkxaIw==
+lit-js-sdk@1.2.24:
+  version "1.2.24"
+  resolved "https://registry.yarnpkg.com/lit-js-sdk/-/lit-js-sdk-1.2.24.tgz#82c3a1c2998b1dec85375b6f861cabe784590e4a"
+  integrity sha512-B6eqvMmbDbNMjPhRtBxHArMbE/SEvaDKZSD++Eh333Faa25eAzR7Y14grBaAjD0so8s3h7I0Xn92WSjZMwy+mw==
   dependencies:
     "@ethersproject/bytes" "^5.5.0"
     "@ethersproject/contracts" "^5.2.0"
     "@ethersproject/hash" "^5.4.0"
     "@ethersproject/providers" "^5.2.0"
     "@ethersproject/strings" "^5.5.0"
-    "@ethersproject/transactions" "^5.7.0"
     "@ethersproject/units" "^5.4.0"
     "@ethersproject/wallet" "^5.2.0"
     "@walletconnect/ethereum-provider" "1.7.8"
     buffer "^6.0.3"
     bufferutil "^4.0.6"
     cross-blob "^3.0.1"
-    js-base64 "^3.7.2"
     jszip "^3.6.0"
     lit-connect-modal "^0.1.10"
     lit-siwe "^1.1.8"
@@ -1014,7 +1007,7 @@ minimalistic-crypto-utils@^1.0.1:
   resolved "https://registry.yarnpkg.com/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz#f6c00c1c0b082246e5c4d99dfb8c7c083b2b582a"
   integrity sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==
 
-multiformats@^10.0.2:
+multiformats@10.0.2:
   version "10.0.2"
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-10.0.2.tgz#e549ae833dac77edb534bece4adf1d1a214879f0"
   integrity sha512-nJEHLFOYhO4L+aNApHhCnWqa31FyqAHv9Q77AhmwU3KsM2f1j7tuJpCk5ByZ33smzycNCpSG5klNIejIyfFx2A==

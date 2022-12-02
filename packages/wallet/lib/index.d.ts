@@ -12,6 +12,10 @@ export interface PKPWalletProp {
     litNetwork?: any;
     debug?: boolean;
 }
+export interface PKPSigner {
+    initPKP(prop: PKPWalletProp): any;
+    runLitAction(toSign: Uint8Array | BytesLike): Promise<any>;
+}
 export declare class PKPWallet extends Signer implements ExternallyOwnedAccount, TypedDataSigner {
     readonly address: string;
     readonly provider: Provider;

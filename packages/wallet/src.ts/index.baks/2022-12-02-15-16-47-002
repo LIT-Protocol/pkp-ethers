@@ -15,7 +15,6 @@ import { computeAddress, recoverAddress, serialize, UnsignedTransaction } from "
 import { Wordlist } from "@ethersproject/wordlists";
 
 // -- For node.js only --
-// @ts-ignore
 import * as LitJsSdk from "lit-js-sdk/build/index.node.js";
 
 // -- For React etc, use the following instead --

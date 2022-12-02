@@ -18,6 +18,7 @@ import { Wordlist } from "@ethersproject/wordlists";
 import * as LitJsSdk from "lit-js-sdk/build/index.node.js";
 
 // -- For React etc, use the following instead --
+// @ts-ignore
 // import * as LitJsSdk from "lit-js-sdk";
 
 import { Logger } from "@ethersproject/logger";
@@ -42,6 +43,11 @@ export interface PKPWalletProp{
     provider: string;
     litNetwork?: any;
     debug?: boolean;
+}
+
+export interface PKPSigner{
+    initPKP(prop: PKPWalletProp): any;
+    runLitAction(toSign: Uint8Array | BytesLike): Promise<any>
 }
 
 export class PKPWallet extends Signer implements ExternallyOwnedAccount, TypedDataSigner{
