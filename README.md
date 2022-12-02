@@ -6,6 +6,11 @@ yarn lit --reset
 
 ```
 
+## `lit-tool.mjs`
+
+This is a JavaScript file that defines a script for resetting and rebuilding a software project. The script is designed to clean up, back up, and restore certain files and dependencies in the project.
+Once the reset process is complete, the script restores any files that were backed up and rebuilds the project again. Finally, the script exits.
+
 The Ethers Project
 ==================
 
