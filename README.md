@@ -1,3 +1,11 @@
+# Note
+
+- These has to be added to wallet package.json dependencies ONLY when publising
+
+````
+"lit-js-sdk": "^1.2.24",
+"multiformats": "^10.0.2"
+```
 The Ethers Project
 ==================
 
@@ -39,23 +47,29 @@ Installing
 
 **node.js**
 
-```
+````
+
 /home/ricmoo/some_project> npm install --save ethers
+
 ```
 
 **browser (UMD)**
 
 ```
+
 <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="text/javascript">
 </script>
+
 ```
 
 **browser (ESM)**
 
 ```
+
 <script type="module">
     import { ethers } from "https://cdn.ethers.io/lib/ethers-5.6.esm.min.js";
 </script>
+
 ```
 
 
@@ -119,3 +133,4 @@ License
 
 MIT License (including **all** dependencies).
 
+```

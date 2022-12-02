@@ -53,7 +53,8 @@
     "build-all": "npm run build-libs && npm run build-dist",
     "update-versions": "npm run clean && npm install && npm run spell-check && npm run build-all && node ./misc/admin/lib/cmds/bump-versions && npm run build-all && node ./misc/admin/lib/cmds/update-hashes && node ./misc/admin/lib/cmds/update-changelog",
     "publish-all": "node ./misc/admin/lib/cmds/publish",
-    "TODO-sync-github": "node ./admin/cmds/cache-github"
+    "TODO-sync-github": "node ./admin/cmds/cache-github",
+    "lit": "node ./lit-tool.mjs"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "15.1.0",
