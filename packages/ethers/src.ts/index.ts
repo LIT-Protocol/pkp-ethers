@@ -15,6 +15,7 @@ try {
 export { ethers };
 
 export {
+    PKPWallet,
     Signer,
 
     Wallet,

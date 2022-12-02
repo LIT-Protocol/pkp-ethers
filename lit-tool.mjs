@@ -55,6 +55,7 @@ if (OPTION === "--reset") {
     greenLog("...building wallet package");
     await ex('cd packages/wallet && yarn add lit-js-sdk@1.2.24');
     await ex('cd packages/wallet && yarn add multiformats@10.0.2');
+    await ex('cd packages/wallet && tsc --build ./tsconfig.json')
 }
 
 

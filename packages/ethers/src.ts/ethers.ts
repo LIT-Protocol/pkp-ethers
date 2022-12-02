@@ -5,7 +5,7 @@ import { BaseContract, Contract, ContractFactory } from "@ethersproject/contract
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 
 import { Signer, VoidSigner } from "@ethersproject/abstract-signer";
-import { Wallet } from "@ethersproject/wallet";
+import { PKPWallet, Wallet } from "@ethersproject/wallet";
 
 import * as constants from "@ethersproject/constants";
 
@@ -60,6 +60,7 @@ import {
 // Exports
 
 export {
+    PKPWallet,
     Signer,
 
     Wallet,
