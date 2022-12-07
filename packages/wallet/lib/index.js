@@ -280,7 +280,7 @@ var PKPWallet = /** @class */ (function (_super) {
                     case 1:
                         populated = _a.sent();
                         toSign = hash_1._TypedDataEncoder.hash(populated.domain, types, populated.value);
-                        return [4 /*yield*/, this.runLitAction(toSign, 'pkp-eth-sign-typed-data')];
+                        return [4 /*yield*/, this.runLitAction((0, bytes_1.arrayify)(toSign), 'pkp-eth-sign-typed-data')];
                     case 2:
                         signature = _a.sent();
                         return [2 /*return*/, (0, bytes_1.joinSignature)({

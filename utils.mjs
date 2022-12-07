@@ -177,3 +177,56 @@ export const ex = async (command) => {
         });
     });
 }
+
+/**
+ * Asynchronously runs the specified command and returns the output.
+ *
+ * @param {string} command The command to run.
+ *
+ * @return {Promise<string>} A promise that resolves with the output of the command.
+ *
+ * @throws {Error} If the command fails to run.
+ */
+ export async function childRunCommand(command) {
+    return new Promise((resolve, reject) => {
+        const child = exec(command, (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            resolve(stdout.trim());
+        });
+        child.stdout.on('data', (data) => {
+            console.log(data.toString().replace(/\n$/, ''));
+        });
+
+        child.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
+
+        child.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+            // exit();
+        });
+
+    });
+}
+
+export const spawnCommand = (command, args, options = {}) => {
+    
+    // Use the spawn() function to run the command in a child process
+    const child = spawn(command, args, options);
+
+    // Handle child process output
+    child.stdout.on("data", data => {
+        console.log(`child stdout:\n${data}`);
+    });
+
+    child.stderr.on("data", data => {
+        console.error(`child stderr:\n${data}`);
+    });
+
+    child.on("exit", code => {
+        console.log(`child process exited with code ${code}`);
+    });
+}

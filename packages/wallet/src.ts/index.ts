@@ -202,7 +202,7 @@ export class PKPWallet extends Signer implements ExternallyOwnedAccount, TypedDa
         
         // -- lit action --
         const toSign = _TypedDataEncoder.hash(populated.domain, types, populated.value);
-        const signature = await this.runLitAction(toSign, 'pkp-eth-sign-typed-data');
+        const signature = await this.runLitAction(arrayify(toSign), 'pkp-eth-sign-typed-data');
         return joinSignature({
             r: '0x' + signature.r,
             s: '0x' + signature.s,
