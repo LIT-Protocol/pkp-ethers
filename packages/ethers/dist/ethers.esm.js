@@ -17881,7 +17881,7 @@ class PKPWallet extends Signer {
             // return joinSignature(this._signingKey().signDigest(_TypedDataEncoder.hash(populated.domain, types, populated.value)));
             // -- lit action --
             const toSign = TypedDataEncoder.hash(populated.domain, types, populated.value);
-            const signature = yield this.runLitAction(toSign, 'pkp-eth-sign-typed-data');
+            const signature = yield this.runLitAction(arrayify(toSign), 'pkp-eth-sign-typed-data');
             return joinSignature({
                 r: '0x' + signature.r,
                 s: '0x' + signature.s,

@@ -1,0 +1,14 @@
+{
+  "delete": [
+    "funding",
+    "ethereum",
+    "scripts",
+    "sideEffects",
+    "tarballHash",
+    "repository"
+  ],
+  "name": "@lit-protocol/pkp-ethers.js",
+  "keywords": ["Lit Protocol", "PKP", "Lit Actions"],
+  "description": "PKP Signer for ethers",
+  "author": "Richard Moore <me@ricmoo.com> & Lit Protocol <Anson & Sarah>"
+}

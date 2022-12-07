@@ -1,5 +1,5 @@
 import { exit } from "process";
-import { getArgs, ex, greenLog, createDirs , childRunCommand} from "./utils.mjs";
+import { getArgs, ex, greenLog, createDirs, childRunCommand, readJsonFile, writeFile } from "./utils.mjs";
 
 const args = getArgs();
 
@@ -7,7 +7,11 @@ const OPTION = args[0];
 
 if (!OPTION || OPTION === '' || OPTION === '--help') {
     greenLog(`
-    --reset: reset and rebuild
+    Usage: node lit-tool.mjs [OPTION]
+
+        --help: show this help
+        --reset: reset and rebuild
+        --publish: public packages/wallet to npm
     `, true);
     exit();
 }
@@ -56,7 +60,7 @@ if (OPTION === "--reset") {
 
     greenLog("...temporarily replace wallet package.json with the original one");
     await childRunCommand(`cp packages/wallet/package.original.json packages/wallet/package.json`);
-    
+
     // ----- Install & build -----
     console.log(`==================== Installation ====================\n`);
     greenLog("...installing dependencies from root");
@@ -71,10 +75,10 @@ if (OPTION === "--reset") {
     await childRunCommand(`cp packages/wallet/src.ts/index.ts.to-recover packages/wallet/src.ts/index.ts`);
     await childRunCommand(`rm -f packages/wallet/src.ts/index.ts.to-recover`);
 
-   
+
     greenLog("...building all packages with new index.ts");
     await childRunCommand('yarn build-all');
-    
+
     greenLog("...restoring wallet package.json with package.current.json");
     await childRunCommand(`cp packages/wallet/package.current.json packages/wallet/package.json`);
     await childRunCommand(`cd packages/wallet && yarn`);
@@ -99,6 +103,34 @@ if (OPTION === "--reset") {
 
     exit();
 
+}
+
+if (OPTION === '--publish') {
+    const json = await readJsonFile('packages/wallet/package.json');
+    const config = await readJsonFile('packages/wallet/pub.config.json');
+
+    // -- edit json based on config --
+    config.delete.forEach((key) => {
+        delete json[key];
+    });
+    json.keywords = config.keywords;
+    json.name = config.name;
+    json.description = config.description;
+    json.author = config.author;
+
+    // bump a patch version of json.version
+    const version = json.version.split('.');
+    version[2] = parseInt(version[2]) + 1;
+    json.version = version.join('.');
+    console.log(`New version: ${json.version}`);
+
+    // -- write json to file --
+    await writeFile('packages/wallet/package.json', JSON.stringify(json, null, 4));
+    
+    await childRunCommand('cd packages/wallet && tsc --build ./tsconfig.json')
+
+    await childRunCommand('cd packages/wallet && npm publish');
+    
 }
 
 exit();
