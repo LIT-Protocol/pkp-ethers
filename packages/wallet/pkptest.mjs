@@ -1,5 +1,6 @@
 import { PKPWallet } from "ethers";
 import { ethers } from "ethers";
+import { pkpNft } from './pkp-nft.mjs';
 
 /** ========== Configuration ========== */
 const ADDRESS = '0x5B8A8d043f2235a29E4b063c20299050931832Dc';
@@ -148,3 +149,18 @@ if (typesV4.EIP712Domain) {
 const signedTypedDataV4 = await pkpWallet._signTypedData(domainV4, typesV4, messageV4);
 const signTypedDataV4Addr = ethers.utils.verifyTypedData(domainV4, typesV4, messageV4, signedTypedDataV4);
 console.log('Signed typed data V4 verified?', signTypedDataV4Addr.toLowerCase() === (await pkpWallet.getAddress()).toLowerCase());
+
+// -- contract call
+const pkpSigner = pkpWallet;
+const pkpProvider = pkpWallet.rpcProvider;
+
+const contract = new ethers.Contract(pkpNft.address, pkpNft.abi, pkpSigner);
+
+const tx2 = await contract.populateTransaction.mintNext(2, { value: 100000000000000 } );
+console.log("tx2:", tx2);
+
+const signedTx = await pkpSigner.signTransaction(tx2);
+console.log("signedTx:", signedTx);
+
+const sentTx = await pkpWallet.sendTransaction(signedTx);
+console.log("sentTx:", sentTx);

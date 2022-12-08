@@ -16,11 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -106,16 +102,20 @@ function hasMnemonic(value) {
 var PKPWallet = /** @class */ (function (_super) {
     __extends(PKPWallet, _super);
     function PKPWallet(prop) {
-        var _this = this;
         var _a, _b;
-        _this = _super.call(this) || this;
+        var _this = _super.call(this) || this;
         _this.pkpWalletProp = prop;
         _this.litNodeClient = new LitJsSdk.LitNodeClient({
             litNetwork: (_a = prop.litNetwork) !== null && _a !== void 0 ? _a : 'serrano',
             debug: (_b = prop.debug) !== null && _b !== void 0 ? _b : false,
         });
-        _this.rpcProvider = new ethers_1.ethers.providers.JsonRpcBatchProvider(_this.pkpWalletProp.provider);
+        _this.rpcProvider = new ethers_1.ethers.providers.JsonRpcProvider(_this.pkpWalletProp.provider);
+        (0, properties_1.defineReadOnly)(_this, "address", (0, transactions_1.computeAddress)(_this.pkpWalletProp.pkpPubKey));
         return _this;
+        /* istanbul ignore if */
+        // if (prop.provider && !Provider.isProvider(prop.provider)) {
+        //     logger.throwArgumentError("invalid provider", "provider", prop.provider);
+        // }
     }
     PKPWallet.prototype.runLitAction = function (toSign, sigName) {
         return __awaiter(this, void 0, void 0, function () {
@@ -168,9 +168,9 @@ var PKPWallet = /** @class */ (function (_super) {
         var addr = (0, transactions_1.computeAddress)(this.publicKey);
         return Promise.resolve(addr);
     };
-    PKPWallet.prototype.connect = function (provider) {
-        throw new Error("PKPWallet cannot be connected to a provider");
-        // return new Wallet(this, provider);
+    PKPWallet.prototype.connect = function () {
+        // throw new Error("PKPWallet cannot be connected to a provider");
+        return new PKPWallet(this.pkpWalletProp);
     };
     PKPWallet.prototype.init = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -225,6 +225,8 @@ var PKPWallet = /** @class */ (function (_super) {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
+                                        console.log("tx.from:", tx.from);
+                                        console.log("this.address:", this.address);
                                         if (tx.from != null) {
                                             if ((0, address_1.getAddress)(tx.from) !== this.address) {
                                                 logger.throwArgumentError("transaction from address mismatch", "transaction.from", transaction.from);

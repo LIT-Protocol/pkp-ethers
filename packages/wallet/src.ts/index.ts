@@ -56,7 +56,7 @@ export class PKPWallet extends Signer implements ExternallyOwnedAccount, TypedDa
     readonly provider: Provider;
     pkpWalletProp: PKPWalletProp;
     litNodeClient: any;
-    rpcProvider: any;
+    rpcProvider: ethers.providers.JsonRpcProvider;
 
     // Wrapping the _signingKey and _mnemonic in a getter function prevents
     // leaking the private key in console.log; still, be careful! :)
@@ -95,7 +95,15 @@ export class PKPWallet extends Signer implements ExternallyOwnedAccount, TypedDa
             debug: prop.debug ?? false,
         });
 
-        this.rpcProvider = new ethers.providers.JsonRpcBatchProvider(this.pkpWalletProp.provider);
+        this.rpcProvider = new ethers.providers.JsonRpcProvider(this.pkpWalletProp.provider);
+        
+        defineReadOnly(this, "address", computeAddress(this.pkpWalletProp.pkpPubKey));
+
+        /* istanbul ignore if */
+        // if (prop.provider && !Provider.isProvider(prop.provider)) {
+        //     logger.throwArgumentError("invalid provider", "provider", prop.provider);
+        // }
+
     }
 
     get mnemonic() { 
@@ -115,9 +123,9 @@ export class PKPWallet extends Signer implements ExternallyOwnedAccount, TypedDa
         return Promise.resolve(addr);
     }
 
-    connect(provider: Provider): Wallet {
-        throw new Error("PKPWallet cannot be connected to a provider");
-        // return new Wallet(this, provider);
+    connect(): PKPWallet {
+        // throw new Error("PKPWallet cannot be connected to a provider");
+        return new PKPWallet(this.pkpWalletProp);
     }
 
     async init(){
@@ -145,6 +153,9 @@ export class PKPWallet extends Signer implements ExternallyOwnedAccount, TypedDa
         }
 
         return resolveProperties(transaction).then(async (tx) => {
+
+            console.log("tx.from:", tx.from);
+            console.log("this.address:", this.address);
 
             if (tx.from != null) {
                 if (getAddress(tx.from) !== this.address) {
@@ -268,8 +279,6 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 
     readonly address: string;
     readonly provider: Provider;
-    pkpWalletProp: PKPWalletProp;
-    litNodeClient: any;
 
     // Wrapping the _signingKey and _mnemonic in a getter function prevents
     // leaking the private key in console.log; still, be careful! :)

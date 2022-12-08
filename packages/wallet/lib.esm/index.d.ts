@@ -5,6 +5,7 @@ import { Mnemonic } from "@ethersproject/hdnode";
 import { SigningKey } from "@ethersproject/signing-key";
 import { ProgressCallback } from "@ethersproject/json-wallets";
 import { Wordlist } from "@ethersproject/wordlists";
+import { ethers } from 'ethers';
 export interface PKPWalletProp {
     pkpPubKey: string;
     controllerAuthSig: any;
@@ -21,7 +22,7 @@ export declare class PKPWallet extends Signer implements ExternallyOwnedAccount,
     readonly provider: Provider;
     pkpWalletProp: PKPWalletProp;
     litNodeClient: any;
-    rpcProvider: any;
+    rpcProvider: ethers.providers.JsonRpcProvider;
     readonly _signingKey: () => SigningKey;
     readonly _mnemonic: () => Mnemonic;
     runLitAction(toSign: Uint8Array | BytesLike, sigName: string): Promise<any>;
@@ -30,7 +31,7 @@ export declare class PKPWallet extends Signer implements ExternallyOwnedAccount,
     get privateKey(): string;
     get publicKey(): string;
     getAddress(): Promise<string>;
-    connect(provider: Provider): Wallet;
+    connect(): PKPWallet;
     init(): Promise<void>;
     signTransaction(transaction: TransactionRequest): Promise<string>;
     signMessage(message: Bytes | string): Promise<string>;

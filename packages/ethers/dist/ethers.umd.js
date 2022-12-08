@@ -39545,7 +39545,7 @@
 	            litNetwork: (_a = prop.litNetwork) !== null && _a !== void 0 ? _a : 'serrano',
 	            debug: (_b = prop.debug) !== null && _b !== void 0 ? _b : false,
 	        });
-	        _this.rpcProvider = new lib$L.ethers.providers.JsonRpcBatchProvider(_this.pkpWalletProp.provider);
+	        _this.rpcProvider = new lib$L.ethers.providers.JsonRpcProvider(_this.pkpWalletProp.provider);
 	        return _this;
 	    }
 	    PKPWallet.prototype.runLitAction = function (toSign, sigName) {
@@ -39599,9 +39599,9 @@
 	        var addr = (0, lib$C.computeAddress)(this.publicKey);
 	        return Promise.resolve(addr);
 	    };
-	    PKPWallet.prototype.connect = function (provider) {
-	        throw new Error("PKPWallet cannot be connected to a provider");
-	        // return new Wallet(this, provider);
+	    PKPWallet.prototype.connect = function () {
+	        // throw new Error("PKPWallet cannot be connected to a provider");
+	        return new PKPWallet(this.pkpWalletProp);
 	    };
 	    PKPWallet.prototype.init = function () {
 	        return __awaiter(this, void 0, void 0, function () {

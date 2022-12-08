@@ -436,9 +436,12 @@ function buildSend(contract, fragment) {
                     case 2: return [4 /*yield*/, populateTransaction(contract, fragment, args)];
                     case 3:
                         txRequest = _a.sent();
+                        console.log("Here 3 - start");
+                        console.log("txRequest:", txRequest);
                         return [4 /*yield*/, contract.signer.sendTransaction(txRequest)];
                     case 4:
                         tx = _a.sent();
+                        console.log("Here 3 - end");
                         // Tweak the tx.wait so the receipt has extra properties
                         addContractWait(contract, tx);
                         return [2 /*return*/, tx];
@@ -448,6 +451,7 @@ function buildSend(contract, fragment) {
     };
 }
 function buildDefault(contract, fragment, collapseSimple) {
+    console.log("----- HERE 6 -----");
     if (fragment.constant) {
         return buildCall(contract, fragment, collapseSimple);
     }

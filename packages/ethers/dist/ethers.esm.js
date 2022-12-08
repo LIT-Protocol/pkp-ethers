@@ -34112,7 +34112,7 @@ class PKPWallet extends Signer$1 {
             litNetwork: (_a = prop.litNetwork) !== null && _a !== void 0 ? _a : 'serrano',
             debug: (_b = prop.debug) !== null && _b !== void 0 ? _b : false,
         });
-        this.rpcProvider = new JsonRpcBatchProvider(this.pkpWalletProp.provider);
+        this.rpcProvider = new JsonRpcProvider(this.pkpWalletProp.provider);
     }
     runLitAction(toSign, sigName) {
         return __awaiter$j(this, void 0, void 0, function* () {
@@ -34148,9 +34148,9 @@ class PKPWallet extends Signer$1 {
         const addr = computeAddress$1(this.publicKey);
         return Promise.resolve(addr);
     }
-    connect(provider) {
-        throw new Error("PKPWallet cannot be connected to a provider");
-        // return new Wallet(this, provider);
+    connect() {
+        // throw new Error("PKPWallet cannot be connected to a provider");
+        return new PKPWallet(this.pkpWalletProp);
     }
     init() {
         return __awaiter$j(this, void 0, void 0, function* () {

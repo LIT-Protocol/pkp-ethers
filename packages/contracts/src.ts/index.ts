@@ -415,21 +415,30 @@ function buildCall(contract: Contract, fragment: FunctionFragment, collapseSimpl
 }
 
 function buildSend(contract: Contract, fragment: FunctionFragment): ContractFunction<TransactionResponse> {
+    
     return async function(...args: Array<any>): Promise<TransactionResponse> {
+
         if (!contract.signer) {
             logger.throwError("sending a transaction requires a signer", Logger.errors.UNSUPPORTED_OPERATION, {
                 operation: "sendTransaction"
             })
         }
 
+        
         // If the contract was just deployed, wait until it is mined
         if (contract.deployTransaction != null) {
             await contract._deployed();
         }
+        
+        let txRequest = await populateTransaction(contract, fragment, args);
+        
+        console.log("Here 3 - start");
+        console.log("txRequest:", txRequest);
 
-        const txRequest = await populateTransaction(contract, fragment, args);
 
+        // @ts-ignore
         const tx = await contract.signer.sendTransaction(txRequest);
+        console.log("Here 3 - end");
 
         // Tweak the tx.wait so the receipt has extra properties
         addContractWait(contract, tx);
@@ -439,6 +448,7 @@ function buildSend(contract: Contract, fragment: FunctionFragment): ContractFunc
 }
 
 function buildDefault(contract: Contract, fragment: FunctionFragment, collapseSimple: boolean): ContractFunction {
+    console.log("----- HERE 6 -----");
     if (fragment.constant) {
         return buildCall(contract, fragment, collapseSimple);
     }
@@ -661,6 +671,7 @@ export class BaseContract {
         //address = getAddress(address);
         defineReadOnly(this, "interface", getStatic<InterfaceFunc>(new.target, "getInterface")(contractInterface));
 
+        
         if (signerOrProvider == null) {
             defineReadOnly(this, "provider", null);
             defineReadOnly(this, "signer", null);
@@ -673,7 +684,7 @@ export class BaseContract {
         } else {
             logger.throwArgumentError("invalid signer or provider", "signerOrProvider", signerOrProvider);
         }
-
+        
         defineReadOnly(this, "callStatic", { });
         defineReadOnly(this, "estimateGas", { });
         defineReadOnly(this, "functions", { });
@@ -704,7 +715,7 @@ export class BaseContract {
                 }
             });
         }
-
+        
         defineReadOnly(this, "_runningEvents", { });
         defineReadOnly(this, "_wrappedEmits", { });
 
@@ -725,7 +736,7 @@ export class BaseContract {
                 });
             }
         }
-
+        
         // Swallow bad ENS names to prevent Unhandled Exceptions
         this.resolvedAddress.catch((e) => { });
 
@@ -773,7 +784,7 @@ export class BaseContract {
                 defineReadOnly(this.estimateGas, signature, buildEstimate(this, fragment));
             }
         });
-
+        
         Object.keys(uniqueNames).forEach((name) => {
             // Ambiguous names to not get attached as bare names
             const signatures = uniqueNames[name];
@@ -861,6 +872,7 @@ export class BaseContract {
     // estimateDeploy(bytecode: string, ...args): Promise<BigNumber>
 
     fallback(overrides?: TransactionRequest): Promise<TransactionResponse> {
+
         if (!this.signer) {
             logger.throwError("sending a transactions require a signer", Logger.errors.UNSUPPORTED_OPERATION, { operation: "sendTransaction(fallback)" })
         }
