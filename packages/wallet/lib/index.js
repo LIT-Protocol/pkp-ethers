@@ -16,7 +16,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -83,11 +87,11 @@ var random_1 = require("@ethersproject/random");
 var signing_key_1 = require("@ethersproject/signing-key");
 var json_wallets_1 = require("@ethersproject/json-wallets");
 var transactions_1 = require("@ethersproject/transactions");
-// -- For node.js only --
+// -- For node.js only (default for debugging) --
 var LitJsSdk = __importStar(require("lit-js-sdk/build/index.node.js"));
 // -- For React etc, use the following instead --
 // @ts-ignore
-// import * as LitJsSdk from "lit-js-sdk";
+// import * as LitJsSdk from "lit-js-sdk/build/index.js";
 var logger_1 = require("@ethersproject/logger");
 var _version_1 = require("./_version");
 var ethers_1 = require("ethers");
@@ -102,8 +106,9 @@ function hasMnemonic(value) {
 var PKPWallet = /** @class */ (function (_super) {
     __extends(PKPWallet, _super);
     function PKPWallet(prop) {
+        var _this = this;
         var _a, _b;
-        var _this = _super.call(this) || this;
+        _this = _super.call(this) || this;
         _this.pkpWalletProp = prop;
         _this.litNodeClient = new LitJsSdk.LitNodeClient({
             litNetwork: (_a = prop.litNetwork) !== null && _a !== void 0 ? _a : 'serrano',

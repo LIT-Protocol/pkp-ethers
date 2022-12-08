@@ -230,3 +230,16 @@ export const spawnCommand = (command, args, options = {}) => {
         console.log(`child process exited with code ${code}`);
     });
 }
+
+export const isLineCommented = ({file, line}) => {
+    // find the line that contains import * as LitJsSdk from "lit-js-sdk/build/index.node.js";
+    const lines = file.split(line);
+    
+    // check the last 5 characters of the last line
+    const last2Chars = lines[0].slice(-5);
+
+    // check if it contains //, if so it's commented out
+    const isCommentedOut = last2Chars.includes('//');
+
+    return isCommentedOut;
+}

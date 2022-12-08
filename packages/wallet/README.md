@@ -2,8 +2,13 @@
 
 ## Install
 
-```
+```javascript
+// Environments:
+// [Browser]
 yarn add @lit-protocol/pkp-ethers.js ethers
+
+// [Node]
+yarn add @lit-protocol/pkp-ethers.js-node ethers
 ```
 
 ## Then

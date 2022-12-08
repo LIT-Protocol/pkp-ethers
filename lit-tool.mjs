@@ -1,5 +1,5 @@
 import { exit } from "process";
-import { getArgs, ex, greenLog, createDirs, childRunCommand, readJsonFile, writeFile } from "./utils.mjs";
+import { getArgs, greenLog, createDirs, childRunCommand, readJsonFile, writeFile, readFile, isLineCommented, redLog } from "./utils.mjs";
 
 const args = getArgs();
 
@@ -15,6 +15,8 @@ if (!OPTION || OPTION === '' || OPTION === '--help') {
     `, true);
     exit();
 }
+
+const config = await readJsonFile('packages/wallet/pub.config.json');
 
 if (OPTION === "--reset") {
 
@@ -107,14 +109,12 @@ if (OPTION === "--reset") {
 
 if (OPTION === '--publish') {
     const json = await readJsonFile('packages/wallet/package.json');
-    const config = await readJsonFile('packages/wallet/pub.config.json');
 
     // -- edit json based on config --
     config.delete.forEach((key) => {
         delete json[key];
     });
     json.keywords = config.keywords;
-    json.name = config.name;
     json.description = config.description;
     json.author = config.author;
 
@@ -124,13 +124,116 @@ if (OPTION === '--publish') {
     json.version = version.join('.');
     console.log(`New version: ${json.version}`);
 
-    // -- write json to file --
-    await writeFile('packages/wallet/package.json', JSON.stringify(json, null, 4));
-    
-    await childRunCommand('cd packages/wallet && tsc --build ./tsconfig.json')
+    const indexTsPath = 'packages/wallet/src.ts/index.ts';
+    // replace single quotes to double quotes
+    const nodeImport = config.nodeImport.replaceAll("'", '"');
+    const browserImport = config.browserImport.replaceAll("'", '"');
 
-    await childRunCommand('cd packages/wallet && npm publish');
-    
+    async function writePackageJson(name) {
+        json.name = name;
+        // -- write json to file --
+        await writeFile('packages/wallet/package.json', JSON.stringify(json, null, 4));
+        await childRunCommand('cd packages/wallet && tsc --build ./tsconfig.json');
+    }
+
+    async function getStates() {
+        const indexTs = await readFile(indexTsPath);
+        const nodeCommentedOut = isLineCommented({ file: indexTs, line: nodeImport });
+        const browserCommentedOut = isLineCommented({ file: indexTs, line: browserImport });
+        console.log("nodeCommentedOut: ", nodeCommentedOut);
+        console.log("browserCommentedOut: ", browserCommentedOut);
+
+        return { indexTs, nodeCommentedOut, browserCommentedOut }
+    }
+
+    async function publish() {
+        try{
+            await childRunCommand(`yarn build-all`);
+        }catch(e){
+            redLog("Some error occured while building, continuing anyway...");
+        }
+        await childRunCommand(`cd packages/wallet && npm publish`);
+    }
+
+    async function commentOutBothLines() {
+        greenLog(`
+            Commenting out both imports: 
+            ----------------------------
+            // ${nodeImport}
+            // ${browserImport}
+        `, true);
+
+        // -- first, comment out both import lines --
+        const { indexTs, nodeCommentedOut, browserCommentedOut } = await getStates();
+
+        let newIndexTs;
+
+        if (!nodeCommentedOut) {
+            newIndexTs = indexTs.replace(nodeImport, `// ${nodeImport}`);
+        }
+
+        if (!browserCommentedOut) {
+            newIndexTs = indexTs.replace(browserImport, `// ${browserImport}`);
+        }
+
+        try {
+            await writeFile(indexTsPath, newIndexTs);
+        } catch (e) {
+            greenLog("both imports are alreaedy commented out, continuing...");
+        }
+    }
+
+    async function enableNodeImport() {
+        greenLog(`
+            Uncomment node import line to build for node:
+            --------------------------------------------
+        `, true);
+
+        const { indexTs, nodeCommentedOut } = await getStates();
+
+        let newIndexTs;
+
+        if (nodeCommentedOut) {
+            newIndexTs = indexTs.replace(`// ${nodeImport}`, nodeImport);
+        }
+
+        await writeFile(indexTsPath, newIndexTs);
+    }
+
+    async function enableBrowserImport() {
+        greenLog(`
+            Uncomment browser import line to build for browser:
+            --------------------------------------------
+        `, true);
+
+        const { indexTs, browserCommentedOut } = await getStates();
+
+        let newIndexTs;
+
+        if (browserCommentedOut) {
+            newIndexTs = indexTs.replace(`// ${browserImport}`, browserImport);
+        }
+
+        await writeFile(indexTsPath, newIndexTs);
+    }
+
+    await commentOutBothLines();
+    await enableNodeImport();
+    await writePackageJson(config.name.node);
+    await publish();
+
+    await commentOutBothLines();
+    await enableBrowserImport();
+    await writePackageJson(config.name.browser);
+    await publish();
+
+
+    // -- revert to original state --
+    await commentOutBothLines();
+    await enableNodeImport();
+    await writePackageJson(config.name.node);
+
+    greenLog("All done! :D");
 }
 
-exit();
+// exit();

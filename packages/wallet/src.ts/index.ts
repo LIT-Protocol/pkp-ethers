@@ -14,12 +14,12 @@ import { decryptJsonWallet, decryptJsonWalletSync, encryptKeystore, ProgressCall
 import { computeAddress, recoverAddress, serialize, UnsignedTransaction } from "@ethersproject/transactions";
 import { Wordlist } from "@ethersproject/wordlists";
 
-// -- For node.js only --
+// -- For node.js only (default for debugging) --
 import * as LitJsSdk from "lit-js-sdk/build/index.node.js";
 
 // -- For React etc, use the following instead --
 // @ts-ignore
-// import * as LitJsSdk from "lit-js-sdk";
+// import * as LitJsSdk from "lit-js-sdk/build/index.js";
 
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";

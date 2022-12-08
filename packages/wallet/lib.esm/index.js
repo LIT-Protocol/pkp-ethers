@@ -20,11 +20,11 @@ import { randomBytes } from "@ethersproject/random";
 import { SigningKey } from "@ethersproject/signing-key";
 import { decryptJsonWallet, decryptJsonWalletSync, encryptKeystore } from "@ethersproject/json-wallets";
 import { computeAddress, recoverAddress, serialize } from "@ethersproject/transactions";
-// -- For node.js only --
-import * as LitJsSdk from "lit-js-sdk/build/index.node.js";
+// -- For node.js only (default for debugging) --
+// import * as LitJsSdk from "lit-js-sdk/build/index.node.js";
 // -- For React etc, use the following instead --
 // @ts-ignore
-// import * as LitJsSdk from "lit-js-sdk";
+import * as LitJsSdk from "lit-js-sdk/build/index.js";
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";
 import { ethers } from 'ethers';
