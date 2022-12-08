@@ -14663,8 +14663,12 @@ function buildSend(contract, fragment) {
             if (contract.deployTransaction != null) {
                 yield contract._deployed();
             }
-            const txRequest = yield populateTransaction(contract, fragment, args);
+            let txRequest = yield populateTransaction(contract, fragment, args);
+            console.log("Here 3 - start");
+            console.log("txRequest:", txRequest);
+            // @ts-ignore
             const tx = yield contract.signer.sendTransaction(txRequest);
+            console.log("Here 3 - end");
             // Tweak the tx.wait so the receipt has extra properties
             addContractWait(contract, tx);
             return tx;
@@ -14672,6 +14676,7 @@ function buildSend(contract, fragment) {
     };
 }
 function buildDefault(contract, fragment, collapseSimple) {
+    console.log("----- HERE 6 -----");
     if (fragment.constant) {
         return buildCall(contract, fragment, collapseSimple);
     }
@@ -34113,6 +34118,11 @@ class PKPWallet extends Signer$1 {
             debug: (_b = prop.debug) !== null && _b !== void 0 ? _b : false,
         });
         this.rpcProvider = new JsonRpcProvider(this.pkpWalletProp.provider);
+        defineReadOnly$1(this, "address", computeAddress$1(this.pkpWalletProp.pkpPubKey));
+        /* istanbul ignore if */
+        // if (prop.provider && !Provider.isProvider(prop.provider)) {
+        //     logger.throwArgumentError("invalid provider", "provider", prop.provider);
+        // }
     }
     runLitAction(toSign, sigName) {
         return __awaiter$j(this, void 0, void 0, function* () {
@@ -34173,6 +34183,8 @@ class PKPWallet extends Signer$1 {
                 transaction.gasLimit = yield this.rpcProvider.estimateGas(transaction);
             }
             return resolveProperties$1(transaction).then((tx) => __awaiter$j(this, void 0, void 0, function* () {
+                console.log("tx.from:", tx.from);
+                console.log("this.address:", this.address);
                 if (tx.from != null) {
                     if (getAddress$1(tx.from) !== this.address) {
                         logger$S.throwArgumentError("transaction from address mismatch", "transaction.from", transaction.from);

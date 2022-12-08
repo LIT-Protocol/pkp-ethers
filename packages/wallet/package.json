@@ -33,5 +33,5 @@
         "access": "public"
     },
     "types": "./lib/index.d.ts",
-    "version": "5.7.47"
+    "version": "5.7.48"
 }

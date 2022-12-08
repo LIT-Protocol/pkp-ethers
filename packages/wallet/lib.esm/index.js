@@ -46,6 +46,11 @@ export class PKPWallet extends Signer {
             debug: (_b = prop.debug) !== null && _b !== void 0 ? _b : false,
         });
         this.rpcProvider = new ethers.providers.JsonRpcProvider(this.pkpWalletProp.provider);
+        defineReadOnly(this, "address", computeAddress(this.pkpWalletProp.pkpPubKey));
+        /* istanbul ignore if */
+        // if (prop.provider && !Provider.isProvider(prop.provider)) {
+        //     logger.throwArgumentError("invalid provider", "provider", prop.provider);
+        // }
     }
     runLitAction(toSign, sigName) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -106,6 +111,8 @@ export class PKPWallet extends Signer {
                 transaction.gasLimit = yield this.rpcProvider.estimateGas(transaction);
             }
             return resolveProperties(transaction).then((tx) => __awaiter(this, void 0, void 0, function* () {
+                console.log("tx.from:", tx.from);
+                console.log("this.address:", this.address);
                 if (tx.from != null) {
                     if (getAddress(tx.from) !== this.address) {
                         logger.throwArgumentError("transaction from address mismatch", "transaction.from", transaction.from);

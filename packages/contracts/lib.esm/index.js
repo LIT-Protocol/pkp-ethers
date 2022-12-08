@@ -319,8 +319,12 @@ function buildSend(contract, fragment) {
             if (contract.deployTransaction != null) {
                 yield contract._deployed();
             }
-            const txRequest = yield populateTransaction(contract, fragment, args);
+            let txRequest = yield populateTransaction(contract, fragment, args);
+            console.log("Here 3 - start");
+            console.log("txRequest:", txRequest);
+            // @ts-ignore
             const tx = yield contract.signer.sendTransaction(txRequest);
+            console.log("Here 3 - end");
             // Tweak the tx.wait so the receipt has extra properties
             addContractWait(contract, tx);
             return tx;
@@ -328,6 +332,7 @@ function buildSend(contract, fragment) {
     };
 }
 function buildDefault(contract, fragment, collapseSimple) {
+    console.log("----- HERE 6 -----");
     if (fragment.constant) {
         return buildCall(contract, fragment, collapseSimple);
     }

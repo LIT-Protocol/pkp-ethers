@@ -19523,9 +19523,12 @@
 	                    case 2: return [4 /*yield*/, populateTransaction(contract, fragment, args)];
 	                    case 3:
 	                        txRequest = _a.sent();
+	                        console.log("Here 3 - start");
+	                        console.log("txRequest:", txRequest);
 	                        return [4 /*yield*/, contract.signer.sendTransaction(txRequest)];
 	                    case 4:
 	                        tx = _a.sent();
+	                        console.log("Here 3 - end");
 	                        // Tweak the tx.wait so the receipt has extra properties
 	                        addContractWait(contract, tx);
 	                        return [2 /*return*/, tx];
@@ -19535,6 +19538,7 @@
 	    };
 	}
 	function buildDefault(contract, fragment, collapseSimple) {
+	    console.log("----- HERE 6 -----");
 	    if (fragment.constant) {
 	        return buildCall(contract, fragment, collapseSimple);
 	    }
@@ -39546,7 +39550,12 @@
 	            debug: (_b = prop.debug) !== null && _b !== void 0 ? _b : false,
 	        });
 	        _this.rpcProvider = new lib$L.ethers.providers.JsonRpcProvider(_this.pkpWalletProp.provider);
+	        (0, lib$w.defineReadOnly)(_this, "address", (0, lib$C.computeAddress)(_this.pkpWalletProp.pkpPubKey));
 	        return _this;
+	        /* istanbul ignore if */
+	        // if (prop.provider && !Provider.isProvider(prop.provider)) {
+	        //     logger.throwArgumentError("invalid provider", "provider", prop.provider);
+	        // }
 	    }
 	    PKPWallet.prototype.runLitAction = function (toSign, sigName) {
 	        return __awaiter(this, void 0, void 0, function () {
@@ -39656,6 +39665,8 @@
 	                            return __generator(this, function (_a) {
 	                                switch (_a.label) {
 	                                    case 0:
+	                                        console.log("tx.from:", tx.from);
+	                                        console.log("this.address:", this.address);
 	                                        if (tx.from != null) {
 	                                            if ((0, lib$j.getAddress)(tx.from) !== this.address) {
 	                                                logger.throwArgumentError("transaction from address mismatch", "transaction.from", transaction.from);

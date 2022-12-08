@@ -49,8 +49,6 @@ export declare class PKPWallet extends Signer implements ExternallyOwnedAccount,
 export declare class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataSigner {
     readonly address: string;
     readonly provider: Provider;
-    pkpWalletProp: PKPWalletProp;
-    litNodeClient: any;
     readonly _signingKey: () => SigningKey;
     readonly _mnemonic: () => Mnemonic;
     constructor(privateKey?: BytesLike | ExternallyOwnedAccount | SigningKey, provider?: Provider);
