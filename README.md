@@ -10,6 +10,8 @@ Once the reset process is complete, the script restores any files that were back
 yarn lit --reset
 ```
 
+> It is likely to take around 4 minutes to reset. This is because there is a lot of rebuilding involved in the process. We could extract the package, but we want to take advantage of the GitHub `Sync fork` the `ethers-io:master` repo and maintain the same structure at the same time. We welcome any recommendations on this approach.
+
 ## Publish
 
 ```
