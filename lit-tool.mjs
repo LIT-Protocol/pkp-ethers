@@ -1,5 +1,5 @@
 import { exit } from "process";
-import { getArgs, greenLog, createDirs, childRunCommand, readJsonFile, writeFile, readFile, isLineCommented, redLog } from "./utils.mjs";
+import { getArgs, greenLog, createDirs, childRunCommand, readJsonFile, writeFile, readFile, isLineCommented, redLog, spawnListener } from "./utils.mjs";
 
 const args = getArgs();
 
@@ -12,6 +12,7 @@ if (!OPTION || OPTION === '' || OPTION === '--help') {
         --help: show this help
         --reset: reset and rebuild
         --publish: public packages/wallet to npm
+        --dev: run dev mode
     `, true);
     exit();
 }
@@ -147,9 +148,9 @@ if (OPTION === '--publish') {
     }
 
     async function publish() {
-        try{
+        try {
             await childRunCommand(`yarn build-all`);
-        }catch(e){
+        } catch (e) {
             redLog("Some error occured while building, continuing anyway...");
         }
         await childRunCommand(`cd packages/wallet && npm publish`);
@@ -234,6 +235,11 @@ if (OPTION === '--publish') {
     await writePackageJson(config.name.node);
 
     greenLog("All done! :D");
+}
+
+if (OPTION === '--dev') {
+    console.log("Running in dev mode...");
+    childRunCommand('nodemon packages/wallet/pkptest.mjs');
 }
 
 // exit();

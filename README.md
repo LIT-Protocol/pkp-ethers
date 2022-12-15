@@ -1,4 +1,27 @@
-# Workflow
+# Quick Start
+
+### Browser
+
+https://www.npmjs.com/package/@lit-protocol/pkp-ethers.js
+
+```javascript
+yarn add @lit-protocol/pkp-ethers.js ethers
+```
+
+### NodeJS
+
+https://www.npmjs.com/package/@lit-protocol/pkp-ethers.js-node
+
+```javascript
+yarn add @lit-protocol/pkp-ethers.js-node ethers
+```
+
+More info here:
+
+https://github.com/LIT-Protocol/pkp-ethers/tree/master/packages/wallet
+
+
+# Contributing and developing to this SDK
 
 ## `lit-tool.mjs`
 

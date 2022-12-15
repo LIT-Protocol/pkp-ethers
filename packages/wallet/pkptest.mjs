@@ -1,30 +1,52 @@
 import { PKPWallet } from "ethers";
 import { ethers } from "ethers";
+import { exit } from "process";
 import { pkpNft } from './pkp-nft.mjs';
 
 /** ========== Configuration ========== */
-const ADDRESS = '0x5B8A8d043f2235a29E4b063c20299050931832Dc';
+const ADDRESS = '0x1cD4147AF045AdCADe6eAC4883b9310FD286d95a';
 const PKP_PUBKEY =
-  '0x0439e24fbe3332dd2abe3073f663a58fc74674095e5834ebbe7a86fd52f1cbe54b8268d6426fbd66a6979d787b6848b750f3a64a6354da4616f93a3031f3d44e95';
-const CONTROLLER_AUTHSIG = {"sig":"0x8c4b3b2a2f8f0b33ad8092719a604e94ffd2d938c115741e7155cdea3653fca75285ed2499ec1c6f60ab4b1e5e9fab2d4e6cf36abf32fe515d67de152736dfcd1b","derivedVia":"web3.eth.personal.sign","signedMessage":"localhost:3000 wants you to sign in with your Ethereum account:\n0x5B8A8d043f2235a29E4b063c20299050931832Dc\n\n\nURI: http://localhost:3000/\nVersion: 1\nChain ID: 80001\nNonce: McW3494o8EuALAzJn\nIssued At: 2022-12-06T18:09:09.646Z\nExpiration Time: 2022-12-13T18:09:09.644Z","address":"0x5B8A8d043f2235a29E4b063c20299050931832Dc"}
+  '0x0447972cdf33b1b0329c3ddeea661c023e6b251d8b1aeaa92da881cc6d0d1eff22c2cbd6a5fead8ba860064881cdaabd7176ca2cade0d50829460d729bd13514f3';
+const CONTROLLER_AUTHSIG = { "sig": "0x694a3ff6e16ab7d7189b7507df9b73ec118d1966abad7f0e3984df19991ddc2d558abca2fcc5b4acfb710d455c63ca2ad538f4d603d64bd93a1f124b119eac031b", "derivedVia": "web3.eth.personal.sign", "signedMessage": "demo-encrypt-decrypt-react.vercel.app wants you to sign in with your Ethereum account:\n0x1cD4147AF045AdCADe6eAC4883b9310FD286d95a\n\n\nURI: https://demo-encrypt-decrypt-react.vercel.app/\nVersion: 1\nChain ID: 1\nNonce: MrgYgnIW5yHCTKetV\nIssued At: 2022-12-14T02:29:48.420Z\nExpiration Time: 2022-12-21T02:29:48.401Z", "address": "0x1cd4147af045adcade6eac4883b9310fd286d95a" }
 
 // -- TEST
 const AMOUNT = 0; // 1 wei
 
 // ----- Main -----
 const pkpWallet = new PKPWallet({
-    pkpPubKey: PKP_PUBKEY,
-    controllerAuthSig: CONTROLLER_AUTHSIG,
-    provider: "https://rpc-mumbai.maticvigil.com",
+  pkpPubKey: PKP_PUBKEY,
+  controllerAuthSig: CONTROLLER_AUTHSIG,
+  provider: "https://rpc-mumbai.maticvigil.com",
 });
 
 await pkpWallet.init();
 
+// -- contract call
+const pkpSigner = pkpWallet;
+const pkpProvider = pkpWallet.rpcProvider;
+
+const pkpContract = {
+  write: new ethers.Contract(pkpNft.address, pkpNft.abi, pkpSigner),
+  read: new ethers.Contract(pkpNft.address, pkpNft.abi, pkpProvider),
+}
+
+const mintCost = await pkpContract.read.mintCost();
+
+const tx2 = await pkpContract.write.populateTransaction.mintNext(2, { value: mintCost });
+console.log("tx2:", tx2);
+
+const signedTx = await pkpSigner.signTransaction(tx2);
+console.log("signedTx:", signedTx);
+
+const sentTx = await pkpSigner.sendTransaction(signedTx);
+console.log("sentTx:", sentTx);
+
+exit();
 // --- Test signTransaction and sendTransaction
 const tx = {
-    to: ADDRESS,
-    value: AMOUNT, // 1 wei
-    // value: ethers.utils.parseEther("0.000000000000000001"), // 1 wei
+  to: ADDRESS,
+  value: AMOUNT, // 1 wei
+  // value: ethers.utils.parseEther("0.000000000000000001"), // 1 wei
 };
 
 // const signedTx = await pkpWallet.signTransaction(tx);
@@ -150,17 +172,20 @@ const signedTypedDataV4 = await pkpWallet._signTypedData(domainV4, typesV4, mess
 const signTypedDataV4Addr = ethers.utils.verifyTypedData(domainV4, typesV4, messageV4, signedTypedDataV4);
 console.log('Signed typed data V4 verified?', signTypedDataV4Addr.toLowerCase() === (await pkpWallet.getAddress()).toLowerCase());
 
-// -- contract call
-const pkpSigner = pkpWallet;
-const pkpProvider = pkpWallet.rpcProvider;
+// // -- contract call
+// const pkpSigner = pkpWallet;
+// const pkpProvider = pkpWallet.rpcProvider;
 
-const contract = new ethers.Contract(pkpNft.address, pkpNft.abi, pkpSigner);
+// const contract = {
+//   write: new ethers.Contract(pkpNft.address, pkpNft.abi, pkpSigner),
+//   read: new ethers.Contract(pkpNft.address, pkpNft.abi, pkpProvider),
+// }
 
-const tx2 = await contract.populateTransaction.mintNext(2, { value: 100000000000000 } );
-console.log("tx2:", tx2);
+// const tx2 = await contract.populateTransaction.mintNext(2, { value: 100000000000000 });
+// console.log("tx2:", tx2);
 
-const signedTx = await pkpSigner.signTransaction(tx2);
-console.log("signedTx:", signedTx);
+// const signedTx = await pkpSigner.signTransaction(tx2);
+// console.log("signedTx:", signedTx);
 
-const sentTx = await pkpWallet.sendTransaction(signedTx);
-console.log("sentTx:", sentTx);
+// const sentTx = await pkpWallet.sendTransaction(signedTx);
+// console.log("sentTx:", sentTx);

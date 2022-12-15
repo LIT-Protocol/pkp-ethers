@@ -187,7 +187,7 @@ export const ex = async (command) => {
  *
  * @throws {Error} If the command fails to run.
  */
- export async function childRunCommand(command) {
+export async function childRunCommand(command) {
     return new Promise((resolve, reject) => {
         const child = exec(command, (error, stdout, stderr) => {
             if (error) {
@@ -213,7 +213,7 @@ export const ex = async (command) => {
 }
 
 export const spawnCommand = (command, args, options = {}) => {
-    
+
     // Use the spawn() function to run the command in a child process
     const child = spawn(command, args, options);
 
@@ -231,10 +231,10 @@ export const spawnCommand = (command, args, options = {}) => {
     });
 }
 
-export const isLineCommented = ({file, line}) => {
+export const isLineCommented = ({ file, line }) => {
     // find the line that contains import * as LitJsSdk from "lit-js-sdk/build/index.node.js";
     const lines = file.split(line);
-    
+
     // check the last 5 characters of the last line
     const last2Chars = lines[0].slice(-5);
 
@@ -242,4 +242,58 @@ export const isLineCommented = ({file, line}) => {
     const isCommentedOut = last2Chars.includes('//');
 
     return isCommentedOut;
+}
+
+export const spawnListener = (commands, callback, prefix = '', color = 31) => {
+
+    let _commands = commands.split(" ");
+    // let eventName = _commands.join('-');
+
+    // make commands to pass to spawn
+    const command = _commands[0];
+    const args = _commands.slice(1);
+
+    // Use the spawn() function to run the command in a child process
+    let bob = spawn(command, args, {
+        env: {
+            ...process.env,
+            FORCE_COLOR: true,
+        }
+    });
+
+    bob.on('exit', (exitCode) => {
+        if (parseInt(exitCode) !== 0) {
+            // handle non-exit code
+            redLog(`child process exited with code ${exitCode} when running ${command}`);
+
+            if (callback?.onExit) {
+                callback?.onExit(exitCode);
+            }
+            exit();
+        }
+        // eventsEmitter.emit(eventName);
+
+        if (callback?.onDone) {
+            callback?.onDone(exitCode);
+        }
+    })
+
+    // Handle child process output
+    // bob.stdout.pipe(process.stdout);
+    // randomize the color
+
+    if (!color) {
+        color = Math.floor(Math.random() * 6) + 31;
+    }
+
+    bob.stdout.on('data', (data) => {
+        console.log(`\x1b[${color}m%s\x1b[0m: %s`, prefix, data.toString().replace(/\n$/, ''));
+    })
+
+    // foward the key to the child process
+    process.stdin.on('data', (key) => {
+        bob.stdin.write(key);
+    })
+
+    return bob;
 }
