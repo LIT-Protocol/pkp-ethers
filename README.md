@@ -1,3 +1,14 @@
+# THIS HAS MOVED TO THE MAIN JS-SDK MONOREPO
+
+https://github.com/LIT-Protocol/js-sdk
+
+It's now available at 
+https://www.npmjs.com/package/@lit-protocol/pkp-ethers
+
+
+
+
+
 # Quick Start
 
 ### Browser
